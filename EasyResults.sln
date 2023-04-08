@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyResults.Tests", "EasyRe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3F992C3C-BE73-42B1-BF89-587CF55179A8}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\cd.yml = .github\workflows\cd.yml
+		.github\workflows\ci.yml = .github\workflows\ci.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -22,18 +24,10 @@ Global
 		{8E4C0B45-5E76-4935-89EE-452164C2C881}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E4C0B45-5E76-4935-89EE-452164C2C881}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E4C0B45-5E76-4935-89EE-452164C2C881}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C3F211A-8FCB-409C-A34C-4728D54647B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C3F211A-8FCB-409C-A34C-4728D54647B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C3F211A-8FCB-409C-A34C-4728D54647B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C3F211A-8FCB-409C-A34C-4728D54647B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CBF8CD72-AF75-46CA-9CA5-CCFA7EDC2FF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CBF8CD72-AF75-46CA-9CA5-CCFA7EDC2FF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBF8CD72-AF75-46CA-9CA5-CCFA7EDC2FF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBF8CD72-AF75-46CA-9CA5-CCFA7EDC2FF0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF90A29E-8516-430C-B1E3-F9C8C711E5E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF90A29E-8516-430C-B1E3-F9C8C711E5E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF90A29E-8516-430C-B1E3-F9C8C711E5E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF90A29E-8516-430C-B1E3-F9C8C711E5E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
