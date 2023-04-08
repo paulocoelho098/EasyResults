@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <Version>1.0.4</Version>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackageProjectUrl>https://github.com/paulocoelho098/EasyResults</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="../LICENSE.txt">
+      <Pack>true</Pack>
+      <PackagePath></PackagePath>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+      <Content Include="..\README.md">
+        <Pack>true</Pack>
+        <PackagePath></PackagePath>
+      </Content>
+  </ItemGroup>
+</Project>
