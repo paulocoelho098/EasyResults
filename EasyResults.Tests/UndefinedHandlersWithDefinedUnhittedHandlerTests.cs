@@ -14,6 +14,7 @@ namespace EasyResults.Tests
             var resultHandler = new ResultHandler<string, string>()
                 .OnClientError(r => "client")
                 .OnServerError(r => "server")
+                .OnCustomStatus(r => "custom")
                 .OnUnhittedHandler(r => "unhitted");
 
             // Act
@@ -36,6 +37,7 @@ namespace EasyResults.Tests
             var resultHandler = new ResultHandler<string, string>()
                 .OnSuccess(r => "success")
                 .OnServerError(r => "server")
+                .OnCustomStatus(r => "custom")
                 .OnUnhittedHandler(r => "unhitted");
 
             // Act
@@ -46,13 +48,32 @@ namespace EasyResults.Tests
         }
 
         [Fact]
-        public void HandleResult_ReturnsResultHandlerResult_WhenStatusIsInternalServerErrorAndClientErrorHandlerIsNotDefinedAndUnhittedIsDefined()
+        public void HandleResult_ReturnsResultHandlerResult_WhenStatusIsInternalServerErrorAndInternalServerErrorHandlerIsNotDefinedAndUnhittedIsDefined()
         {
             // Arrange
             Result<string> result = ResultsMock.InternalServerError;
             var resultHandler = new ResultHandler<string, string>()
                 .OnSuccess(r => "success")
                 .OnClientError(r => "client")
+                .OnCustomStatus(r => "custom")
+                .OnUnhittedHandler(r => "unhitted");
+
+            // Act
+            string resultHandlerResult = resultHandler.HandleResult(result);
+
+            // Assert
+            Assert.Equal("unhitted", resultHandlerResult);
+        }
+
+        [Fact]
+        public void HandleResult_ReturnsResultHandlerResult_WhenStatusIsCustomAndCustomIsNotDefinedAndUnhittedIsDefined()
+        {
+            // Arrange
+            Result<string> result = new Result<string>((Status)1000);
+            var resultHandler = new ResultHandler<string, string>()
+                .OnSuccess(r => "success")
+                .OnClientError(r => "client")
+                .OnServerError(r => "server")
                 .OnUnhittedHandler(r => "unhitted");
 
             // Act

@@ -19,27 +19,14 @@ namespace EasyResults.Tests
         }
 
         [Fact]
-        public void HandleResult_ThrowsUnreachableException_WhenStatusIsNotDefined()
-        {
-            // Arrange
-            Result<string> result = new()
-            {
-                Status = (Status)999
-            };
-            ResultHandler<string, string> resultHandler = new();
-
-            // Act & Assert
-            Assert.Throws<UnreachableException>(() => resultHandler.HandleResult(result));
-        }
-
-        [Fact]
         public void HandleResult_ThrowsNotHandledException_WhenStatusIsSuccessAndSuccessHandlerIsNull()
         {
             // Arrange
             Result<string> result = ResultsMock.Success;
             ResultHandler<string, string> resultHandler = new ResultHandler<string, string>()
                 .OnClientError(_ => "true")
-                .OnServerError(_ => "false");
+                .OnServerError(_ => "false")
+                .OnCustomStatus(_ => "custom");
 
             // Act & Assert
             Assert.Throws<NotHandledException>(() => resultHandler.HandleResult(result));
@@ -57,7 +44,8 @@ namespace EasyResults.Tests
             Result<string> result = new(status);
             ResultHandler<string, string> resultHandler = new ResultHandler<string, string>()
                 .OnSuccess(_ => "true")
-                .OnServerError(_ => "false");
+                .OnServerError(_ => "false")
+                .OnCustomStatus(_ => "custom");
 
             // Act & Assert
             Assert.Throws<NotHandledException>(() => resultHandler.HandleResult(result));
@@ -70,10 +58,46 @@ namespace EasyResults.Tests
             Result<string> result = ResultsMock.InternalServerError;
             ResultHandler<string, string> resultHandler = new ResultHandler<string, string>()
                 .OnSuccess(_ => "true")
-                .OnClientError(_ => "false");
+                .OnClientError(_ => "false")
+                .OnCustomStatus(_ => "custom");
 
             // Act & Assert
             Assert.Throws<NotHandledException>(() => resultHandler.HandleResult(result));
+        }
+
+        [Fact]
+        public void HandleResult_ThrowsNotHandledException_WhenStatusIsCustomAndCustomHandlerIsNull()
+        {
+            // Arrange
+            Result<string> result = new Result<string>((Status)1000);
+            ResultHandler<string, string> resultHandler = new ResultHandler<string, string>()
+                .OnSuccess(_ => "true")
+                .OnClientError(_ => "false")
+                .OnServerError(_ => "false");
+
+            // Act & Assert
+            Assert.Throws<NotHandledException>(() => resultHandler.HandleResult(result));
+        }
+
+        [Theory]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(300)]
+        [InlineData(600)]
+        [InlineData(998)]
+        [InlineData(999)]
+        public void HandleResult_ThrowsReservedStatusException_WhenStatusIsCustomAndInReservedRange(int status)
+        {
+            // Arrange
+            Result<string> result = new Result<string>((Status)status);
+            ResultHandler<string, string> resultHandler = new ResultHandler<string, string>()
+                .OnSuccess(_ => "true")
+                .OnClientError(_ => "false")
+                .OnServerError(_ => "false")
+                .OnCustomStatus(_ => "custom");
+
+            // Act & Assert
+            Assert.Throws<ReservedStatusException>(() => resultHandler.HandleResult(result));
         }
 
     }

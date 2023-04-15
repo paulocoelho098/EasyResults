@@ -33,6 +33,11 @@ namespace EasyResults.Handlers
         private Func<Result<T>, T2>? _serverErrorResultHandler;
 
         /// <summary>
+        /// Method that handles the result if it returns a custom Status
+        /// </summary>
+        private Func<Result<T>, T2>? _customResultHandler;
+
+        /// <summary>
         /// Dictionary that maps Status codes to methods. If _action returns a Status code that exists
         /// in the dictionary then it will execute the corresponding method to handle the result
         /// </summary>
@@ -116,7 +121,15 @@ namespace EasyResults.Handlers
                     break;
 
                 default:
-                    throw new UnreachableException($"Unknown Status Code: {(int)result.Status}");
+                    if((int)result.Status >= 8 && (int)result.Status <= 999)
+                    {
+                        throw new ReservedStatusException();
+                    }
+                    if (_customResultHandler is not null)
+                    {
+                        return _customResultHandler.Invoke(result);
+                    }
+                    break;
             }
 
             #endregion
@@ -174,6 +187,17 @@ namespace EasyResults.Handlers
         public ResultHandler<T, T2> OnServerError(Func<Result<T>, T2> action)
         {
             _serverErrorResultHandler = action;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the method that will handle results with custom status
+        /// </summary>
+        /// <param name="action">Handler method</param>
+        /// <returns>Instance of the current ResultHandler</returns>
+        public ResultHandler<T, T2> OnCustomStatus(Func<Result<T>, T2> action)
+        {
+            _customResultHandler = action;
             return this;
         }
 

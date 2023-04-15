@@ -32,6 +32,7 @@ namespace EasyResults.Tests
         [InlineData(Status.NotFound, "client")]
         [InlineData(Status.Conflict, "client")]
         [InlineData(Status.InternalServerError, "server")]
+        [InlineData((Status)1000, "custom")]
         public void HandleResult_ReturnsResultHandlerResult_WhenStatusIsError(Status status, string expected)
         {
             // Arrange
@@ -40,7 +41,8 @@ namespace EasyResults.Tests
             var resultHandler = new ResultHandler<string, string>()
             .OnSuccess(r => "success")
             .OnClientError(r => "client")
-            .OnServerError(r => "server");
+            .OnServerError(r => "server")
+            .OnCustomStatus(r => "custom");
 
             // Act
             string resultHandlerResult = resultHandler.HandleResult(result);

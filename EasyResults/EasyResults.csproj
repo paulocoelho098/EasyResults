@@ -7,22 +7,17 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-    <Version>1.0.4</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
   <PropertyGroup>
     <PackageProjectUrl>https://github.com/paulocoelho098/EasyResults</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="../LICENSE.txt">
-      <Pack>true</Pack>
-      <PackagePath></PackagePath>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-      <Content Include="..\README.md">
-        <Pack>true</Pack>
-        <PackagePath></PackagePath>
-      </Content>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 </Project>

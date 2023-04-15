@@ -30,6 +30,7 @@ namespace EasyResults.Tests
                 .OnSuccess(r => "success")
                 .OnClientError(r => "client")
                 .OnServerError(r => "server")
+                .OnCustomStatus(r => "custom")
                 .OnStatus(Status.BadRequest, r => "badrequest");
 
             // Act
@@ -48,6 +49,7 @@ namespace EasyResults.Tests
                 .OnSuccess(r => "success")
                 .OnClientError(r => "client")
                 .OnServerError(r => "server")
+                .OnCustomStatus(r => "custom")
                 .OnStatus(Status.Unauthorized, r => "unauthorized");
 
             // Act
@@ -66,6 +68,7 @@ namespace EasyResults.Tests
                 .OnSuccess(r => "success")
                 .OnClientError(r => "client")
                 .OnServerError(r => "server")
+                .OnCustomStatus(r => "custom")
                 .OnStatus(Status.Forbidden, r => "forbidden");
 
             // Act
@@ -84,6 +87,7 @@ namespace EasyResults.Tests
                 .OnSuccess(r => "success")
                 .OnClientError(r => "client")
                 .OnServerError(r => "server")
+                .OnCustomStatus(r => "custom")
                 .OnStatus(Status.NotFound, r => "notfound");
 
             // Act
@@ -102,6 +106,7 @@ namespace EasyResults.Tests
                 .OnSuccess(r => "success")
                 .OnClientError(r => "client")
                 .OnServerError(r => "server")
+                .OnCustomStatus(r => "custom")
                 .OnStatus(Status.Conflict, r => "conflict");
 
             // Act
@@ -120,6 +125,7 @@ namespace EasyResults.Tests
                 .OnSuccess(r => "success")
                 .OnClientError(r => "client")
                 .OnServerError(r => "server")
+                .OnCustomStatus(r => "custom")
                 .OnStatus(Status.InternalServerError, r => "internalservererror");
 
             // Act
@@ -128,5 +134,25 @@ namespace EasyResults.Tests
             // Assert
             Assert.Equal("internalservererror", resultHandlerResult);
         }
+
+        [Fact]
+        public void HandleResult_ReturnsResultHandlerResult_WhenStatusIsCustomAndCustomStatusHandlerIsDefined()
+        {
+            // Arrange
+            Result<string> result = new Result<string>((Status)1000);
+            var resultHandler = new ResultHandler<string, string>()
+                .OnSuccess(r => "success")
+                .OnClientError(r => "client")
+                .OnServerError(r => "server")
+                .OnCustomStatus(r => "custom")
+                .OnStatus((Status)1000, r => "customStatus");
+
+            // Act
+            string resultHandlerResult = resultHandler.HandleResult(result);
+
+            // Assert
+            Assert.Equal("customStatus", resultHandlerResult);
+        }
+
     }
 }
