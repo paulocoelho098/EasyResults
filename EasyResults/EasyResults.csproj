@@ -20,4 +20,7 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="copy &quot;$(SolutionDir)README.md&quot; &quot;$(ProjectDir)&quot;" />
+  </Target>
 </Project>
