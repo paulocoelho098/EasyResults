@@ -10,18 +10,19 @@ public class DefinedHandlersTests
     public void Execute_ReturnsResultHandlerResult_WhenActionIsDefined()
     {
         // Arrange
-        ResultHandler<string> resultHandler = new ResultHandler<string>()
+        string result = "";
+        ResultHandler resultHandler = new ResultHandler()
             .Action(() =>
             {
                 return ResultsMock.Success;
             })
-            .OnSuccess(r => "true");
+            .OnSuccess(() => result = "true");
 
         // Act
-        string resultHandlerResult = resultHandler.Execute();
+        resultHandler.Execute();
 
         // Assert
-        Assert.Equal("true", resultHandlerResult);
+        Assert.Equal("true", result);
     }
 
     [Theory]
@@ -37,18 +38,19 @@ public class DefinedHandlersTests
     {
         // Arrange
         Result<string> result = new(status);
+        string resultStr = "";
 
-        var resultHandler = new ResultHandler<string>()
-        .OnSuccess(r => "success")
-        .OnClientError(r => "client")
-        .OnServerError(r => "server")
-        .OnCustomStatus(r => "custom");
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "success")
+            .OnClientError(() => resultStr = "client")
+            .OnServerError(() => resultStr = "server")
+            .OnCustomStatus(() => resultStr = "custom");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal(expected, resultHandlerResult);
+        Assert.Equal(expected, resultStr);
     }
 
     [Theory]
@@ -65,18 +67,19 @@ public class DefinedHandlersTests
         // Arrange
         TestId testId = new(1);
         Result<TestId> result = new(status, testId);
+        string resultStr = "";
 
-        var resultHandler = new ResultHandler<string>()
-        .OnSuccess(r => $"success_{((Result<TestId>)r).Data!.Id}")
-        .OnClientError(r => $"client_{((Result<TestId>)r).Data!.Id}")
-        .OnServerError(r => $"server_{((Result<TestId>)r).Data!.Id}")
-        .OnCustomStatus(r => $"custom_{((Result<TestId>)r).Data!.Id}");
+        ResultHandler resultHandler = new ResultHandler()
+        .OnSuccess(() => resultStr = $"success_{result.Data!.Id}")
+        .OnClientError(() => resultStr = $"client_{result.Data!.Id}")
+        .OnServerError(() => resultStr = $"server_{result.Data!.Id}")
+        .OnCustomStatus(() => resultStr = $"custom_{result.Data!.Id}");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal(expected, resultHandlerResult);
+        Assert.Equal(expected, resultStr);
     }
 
 }

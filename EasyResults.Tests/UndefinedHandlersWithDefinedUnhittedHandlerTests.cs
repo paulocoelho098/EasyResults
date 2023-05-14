@@ -11,17 +11,19 @@ public class UndefinedHandlersWithDefinedUnhittedHandlerTests
     {
         // Arrange
         Result result = ResultsMock.Success;
-        var resultHandler = new ResultHandler<string>()
-            .OnClientError(r => "client")
-            .OnServerError(r => "server")
-            .OnCustomStatus(r => "custom")
-            .OnUnhittedHandler(r => "unhitted");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnClientError(() => resultStr = "client")
+            .OnServerError(() => resultStr = "server")
+            .OnCustomStatus(() => resultStr = "custom")
+            .OnUnhittedHandler(() => resultStr = "unhitted");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("unhitted", resultHandlerResult);
+        Assert.Equal("unhitted", resultStr);
     }
 
     [Theory]
@@ -34,17 +36,19 @@ public class UndefinedHandlersWithDefinedUnhittedHandlerTests
     {
         // Arrange
         Result<string> result = new(status);
-        var resultHandler = new ResultHandler<string>()
-            .OnSuccess(r => "success")
-            .OnServerError(r => "server")
-            .OnCustomStatus(r => "custom")
-            .OnUnhittedHandler(r => "unhitted");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "success")
+            .OnServerError(() => resultStr = "server")
+            .OnCustomStatus(() => resultStr = "custom")
+            .OnUnhittedHandler(() => resultStr = "unhitted");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("unhitted", resultHandlerResult);
+        Assert.Equal("unhitted", resultStr);
     }
 
     [Fact]
@@ -52,17 +56,19 @@ public class UndefinedHandlersWithDefinedUnhittedHandlerTests
     {
         // Arrange
         Result result = ResultsMock.InternalServerError;
-        var resultHandler = new ResultHandler<string>()
-            .OnSuccess(r => "success")
-            .OnClientError(r => "client")
-            .OnCustomStatus(r => "custom")
-            .OnUnhittedHandler(r => "unhitted");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "success")
+            .OnClientError(() => resultStr = "client")
+            .OnCustomStatus(() => resultStr = "custom")
+            .OnUnhittedHandler(() => resultStr = "unhitted");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("unhitted", resultHandlerResult);
+        Assert.Equal("unhitted", resultStr);
     }
 
     [Fact]
@@ -70,17 +76,19 @@ public class UndefinedHandlersWithDefinedUnhittedHandlerTests
     {
         // Arrange
         Result<string> result = new Result<string>((Status)1000);
-        var resultHandler = new ResultHandler<string>()
-            .OnSuccess(r => "success")
-            .OnClientError(r => "client")
-            .OnServerError(r => "server")
-            .OnUnhittedHandler(r => "unhitted");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "success")
+            .OnClientError(() => resultStr = "client")
+            .OnServerError(() => resultStr = "server")
+            .OnUnhittedHandler(() => resultStr = "unhitted");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("unhitted", resultHandlerResult);
+        Assert.Equal("unhitted", resultStr);
     }
 
 }

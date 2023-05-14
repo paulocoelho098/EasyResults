@@ -11,7 +11,7 @@ public class MisconfiguredResultHandlerTests
     public void Execute_ThrowsActionNotDefinedException_WhenActionIsNull()
     {
         // Arrange
-        ResultHandler<object> resultHandler = new();
+        ResultHandler resultHandler = new();
 
         // Act & Assert
         Assert.Throws<ActionNotDefined>(() => resultHandler.Execute());
@@ -22,10 +22,12 @@ public class MisconfiguredResultHandlerTests
     {
         // Arrange
         Result result = ResultsMock.Success;
-        ResultHandler<string> resultHandler = new ResultHandler<string>()
-            .OnClientError(_ => "true")
-            .OnServerError(_ => "false")
-            .OnCustomStatus(_ => "custom");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnClientError(() => resultStr = "true")
+            .OnServerError(() => resultStr = "false")
+            .OnCustomStatus(() => resultStr = "custom");
 
         // Act & Assert
         Assert.Throws<NotHandledException>(() => resultHandler.HandleResult(result));
@@ -41,10 +43,12 @@ public class MisconfiguredResultHandlerTests
     {
         // Arrange
         Result<string> result = new(status);
-        ResultHandler<string> resultHandler = new ResultHandler<string>()
-            .OnSuccess(_ => "true")
-            .OnServerError(_ => "false")
-            .OnCustomStatus(_ => "custom");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "true")
+            .OnServerError(() => resultStr = "false")
+            .OnCustomStatus(() => resultStr = "custom");
 
         // Act & Assert
         Assert.Throws<NotHandledException>(() => resultHandler.HandleResult(result));
@@ -55,10 +59,12 @@ public class MisconfiguredResultHandlerTests
     {
         // Arrange
         Result result = ResultsMock.InternalServerError;
-        ResultHandler<string> resultHandler = new ResultHandler<string>()
-            .OnSuccess(_ => "true")
-            .OnClientError(_ => "false")
-            .OnCustomStatus(_ => "custom");
+
+        string resultStr = "";
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "true")
+            .OnClientError(() => resultStr = "false")
+            .OnCustomStatus(() => resultStr = "custom");
 
         // Act & Assert
         Assert.Throws<NotHandledException>(() => resultHandler.HandleResult(result));
@@ -69,10 +75,12 @@ public class MisconfiguredResultHandlerTests
     {
         // Arrange
         Result<string> result = new Result<string>((Status)1000);
-        ResultHandler<string> resultHandler = new ResultHandler<string>()
-            .OnSuccess(_ => "true")
-            .OnClientError(_ => "false")
-            .OnServerError(_ => "false");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "true")
+            .OnClientError(() => resultStr = "false")
+            .OnServerError(() => resultStr = "false");
 
         // Act & Assert
         Assert.Throws<NotHandledException>(() => resultHandler.HandleResult(result));
@@ -89,11 +97,13 @@ public class MisconfiguredResultHandlerTests
     {
         // Arrange
         Result<string> result = new Result<string>((Status)status);
-        ResultHandler<string> resultHandler = new ResultHandler<string>()
-            .OnSuccess(_ => "true")
-            .OnClientError(_ => "false")
-            .OnServerError(_ => "false")
-            .OnCustomStatus(_ => "custom");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "true")
+            .OnClientError(() => resultStr = "false")
+            .OnServerError(() => resultStr = "false")
+            .OnCustomStatus(() => resultStr = "custom");
 
         // Act & Assert
         Assert.Throws<ReservedStatusException>(() => resultHandler.HandleResult(result));

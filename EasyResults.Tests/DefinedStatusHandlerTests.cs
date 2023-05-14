@@ -11,14 +11,16 @@ public class DefinedStatusHandlerTests
     {
         // Arrange
         Result result = ResultsMock.Success;
-        var resultHandler = new ResultHandler<string>()
-            .OnStatus(Status.Success, r => "success");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnStatus(Status.Success, () => resultStr = "success");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("success", resultHandlerResult);
+        Assert.Equal("success", resultStr);
     }
 
     [Fact]
@@ -26,18 +28,20 @@ public class DefinedStatusHandlerTests
     {
         // Arrange
         Result result = ResultsMock.BadRequest;
-        var resultHandler = new ResultHandler<string>()
-            .OnSuccess(r => "success")
-            .OnClientError(r => "client")
-            .OnServerError(r => "server")
-            .OnCustomStatus(r => "custom")
-            .OnStatus(Status.BadRequest, r => "badrequest");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "success")
+            .OnClientError(() => resultStr = "client")
+            .OnServerError(() => resultStr = "server")
+            .OnCustomStatus(() => resultStr = "custom")
+            .OnStatus(Status.BadRequest, () => resultStr = "badrequest");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("badrequest", resultHandlerResult);
+        Assert.Equal("badrequest", resultStr);
     }
 
     [Fact]
@@ -45,18 +49,20 @@ public class DefinedStatusHandlerTests
     {
         // Arrange
         Result result = ResultsMock.Unauthorized;
-        var resultHandler = new ResultHandler<string>()
-            .OnSuccess(r => "success")
-            .OnClientError(r => "client")
-            .OnServerError(r => "server")
-            .OnCustomStatus(r => "custom")
-            .OnStatus(Status.Unauthorized, r => "unauthorized");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "success")
+            .OnClientError(() => resultStr = "client")
+            .OnServerError(() => resultStr = "server")
+            .OnCustomStatus(() => resultStr = "custom")
+            .OnStatus(Status.Unauthorized, () => resultStr = "unauthorized");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("unauthorized", resultHandlerResult);
+        Assert.Equal("unauthorized", resultStr);
     }
 
     [Fact]
@@ -64,18 +70,20 @@ public class DefinedStatusHandlerTests
     {
         // Arrange
         Result result = ResultsMock.Forbidden;
-        var resultHandler = new ResultHandler<string>()
-            .OnSuccess(r => "success")
-            .OnClientError(r => "client")
-            .OnServerError(r => "server")
-            .OnCustomStatus(r => "custom")
-            .OnStatus(Status.Forbidden, r => "forbidden");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "success")
+            .OnClientError(() => resultStr = "client")
+            .OnServerError(() => resultStr = "server")
+            .OnCustomStatus(() => resultStr = "custom")
+            .OnStatus(Status.Forbidden, () => resultStr = "forbidden");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("forbidden", resultHandlerResult);
+        Assert.Equal("forbidden", resultStr);
     }
 
     [Fact]
@@ -83,18 +91,20 @@ public class DefinedStatusHandlerTests
     {
         // Arrange
         Result result = ResultsMock.NotFound;
-        var resultHandler = new ResultHandler<string>()
-            .OnSuccess(r => "success")
-            .OnClientError(r => "client")
-            .OnServerError(r => "server")
-            .OnCustomStatus(r => "custom")
-            .OnStatus(Status.NotFound, r => "notfound");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "success")
+            .OnClientError(() => resultStr = "client")
+            .OnServerError(() => resultStr = "server")
+            .OnCustomStatus(() => resultStr = "custom")
+            .OnStatus(Status.NotFound, () => resultStr = "notfound");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("notfound", resultHandlerResult);
+        Assert.Equal("notfound", resultStr);
     }
 
     [Fact]
@@ -102,18 +112,20 @@ public class DefinedStatusHandlerTests
     {
         // Arrange
         Result result = ResultsMock.Conflict;
-        var resultHandler = new ResultHandler<string>()
-            .OnSuccess(r => "success")
-            .OnClientError(r => "client")
-            .OnServerError(r => "server")
-            .OnCustomStatus(r => "custom")
-            .OnStatus(Status.Conflict, r => "conflict");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "success")
+            .OnClientError(() => resultStr = "client")
+            .OnServerError(() => resultStr = "server")
+            .OnCustomStatus(() => resultStr = "custom")
+            .OnStatus(Status.Conflict, () => resultStr = "conflict");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("conflict", resultHandlerResult);
+        Assert.Equal("conflict", resultStr);
     }
 
     [Fact]
@@ -121,18 +133,20 @@ public class DefinedStatusHandlerTests
     {
         // Arrange
         Result result = ResultsMock.InternalServerError;
-        var resultHandler = new ResultHandler<string>()
-            .OnSuccess(r => "success")
-            .OnClientError(r => "client")
-            .OnServerError(r => "server")
-            .OnCustomStatus(r => "custom")
-            .OnStatus(Status.InternalServerError, r => "internalservererror");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "success")
+            .OnClientError(() => resultStr = "client")
+            .OnServerError(() => resultStr = "server")
+            .OnCustomStatus(() => resultStr = "custom")
+            .OnStatus(Status.InternalServerError, () => resultStr = "internalservererror");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("internalservererror", resultHandlerResult);
+        Assert.Equal("internalservererror", resultStr);
     }
 
     [Fact]
@@ -140,18 +154,20 @@ public class DefinedStatusHandlerTests
     {
         // Arrange
         Result<string> result = new Result<string>((Status)1000);
-        var resultHandler = new ResultHandler<string>()
-            .OnSuccess(r => "success")
-            .OnClientError(r => "client")
-            .OnServerError(r => "server")
-            .OnCustomStatus(r => "custom")
-            .OnStatus((Status)1000, r => "customStatus");
+        string resultStr = "";
+
+        ResultHandler resultHandler = new ResultHandler()
+            .OnSuccess(() => resultStr = "success")
+            .OnClientError(() => resultStr = "client")
+            .OnServerError(() => resultStr = "server")
+            .OnCustomStatus(() => resultStr = "custom")
+            .OnStatus((Status)1000, () => resultStr = "customStatus");
 
         // Act
-        string resultHandlerResult = resultHandler.HandleResult(result);
+        resultHandler.HandleResult(result);
 
         // Assert
-        Assert.Equal("customStatus", resultHandlerResult);
+        Assert.Equal("customStatus", resultStr);
     }
 
 }
