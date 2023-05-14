@@ -1,24 +1,48 @@
 ﻿using EasyResults.Enums;
+using EasyResults.Interfaces;
 
-namespace EasyResults.Entities
+namespace EasyResults.Entities;
+
+public class Result : IResult
 {
-    /// <summary>
-    /// Represents a result of an operation
-    /// </summary>
-    /// <typeparam name="T">The type of the data that the result contains</typeparam>
-    public class Result<T>
+    public Status Status { get; set; }
+    public string? Message { get; set; }
+
+    public Result() { }
+
+    public Result(Status status, string message)
     {
-        public Status Status { get; set; }
-        public T? Data { get; set; } = default;
-        public string? Message { get; set; }
+        Status = status;
+        Message = message;
+    }
 
-        public Result() { }
+    public Result(Status status)
+    {
+        Status = status;
+    }
+}
 
-        public Result(Status status, string message = "", T data = default)
-        {
-            Status = status;
-            Message = message;
-            Data = data;
-        }
+public class Result<T> : Result
+{
+    public T? Data { get; set; } = default;
+
+    public Result() { }
+
+    public Result(Status status, string message, T data) : base(status, message)
+    {
+        Data = data;
+    }
+
+    public Result(Status status, string message) : base(status, message)
+    {
+    }
+
+    public Result(Status status, T data) : base(status)
+    {
+        Data = data;
+    }
+
+    public Result(Status status) : base(status)
+    {
     }
 }

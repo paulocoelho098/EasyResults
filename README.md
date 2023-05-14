@@ -8,11 +8,15 @@ The EasyResults library is available as a NuGet package. To install it, open the
 
 ## How to use
 
-### Classes overview
+### Interface and classes overview
 
-```Result<T>``` is the class that represents the output that will be handled, where T represents the type of data you are handling, for example, if you are getting an user by id you will have a return of ```Result<User>```. In the result you can also define a Status and a Message.
+```IResult``` is an interface that represents the output to be handled
 
-```ResultHandler<T, T2>``` class takes two generic types, where T is the same type of ```Result<T>``` and T2 is the type of the return of the handling, for example, if you are getting an user by id and you want to use EasyResults in the API Controller, you might have ```ResultHandler<User, ActionResult>```.
+```Result``` is a class that implements ```IResult``` and represents the output that can be handled by the application
+
+```Result<T>``` is a class that implements ```IResult``` and represents the output that can be handled, where T represents the type of data you are handling, for example, if you are getting an user by id you will have a return of ```Result<User>```. In the result you can also define a Status and a Message.
+
+```ResultHandler<T>``` class takes a generic type, where T is the type of the return of the handling, for example, if you are getting an user by id and you want to use EasyResults in the API Controller, you might have ```ResultHandler<ActionResult>```.
 
 ### Available status
 
@@ -36,7 +40,7 @@ You have a total of 7 defined status available which split into 3 groups
 
 #### Custom status
 
-You can also pass a custom status to ```Result<T>```. Custom status must have values greater than 1000 since values between 8 and 999 are reserved.
+You can also pass a custom status to ```IResult``` implementations. Custom status must have values greater than 1000 since values between 8 and 999 are reserved.
 
 ### Handling results
 
@@ -44,10 +48,10 @@ There are two ways you can use library to handle results.
 
 #### Via Action and Execute methods
 
-The first way you need to define the Action that will return the result to handle. The return type must be ```Result<T>```.
+The first way you need to define the Action that will return the result to handle. The return type must be ```IResult```.
 
 ```csharp
-return new ResultHandler<User, bool>()
+return new ResultHandler<bool>()
 	.Action(() =>
 	{
 		return this.UsersService.CreateUser(user);
@@ -59,7 +63,7 @@ return new ResultHandler<User, bool>()
 	.Execute();
 ```
 
-On the code above we create an instance of new ```ResultHandler<User, bool>```. It defines the ```Action``` method  which takes a lambda expression that represents the service operation to be executed and returns a ```Result<User>```. 
+On the code above we create an instance of new ```ResultHandler<bool>```. It defines the ```Action``` method  which takes a lambda expression that represents the service operation to be executed and returns a ```IResult``` that can be a ```Result<User>```. 
 
 Afterward it sets the behaviour handlers ```OnSuccess```, ```OnClientError```, ```OnServerError``` and ```OnCustomStatus``` methods, which define the desired result for a successful operation, client-side error, server-side error, and custom status handling respectively.
 
@@ -67,17 +71,17 @@ Finally, it executes the service operation by calling ```Execute``` method and r
 
 #### Via HandleResult method
 
-The second way you don't define the ```Action``` method nor the ```Execute``` method. Instead, it is expected you already have the ```Result<T> ```object and you pass it to the ```HandleResult``` method which will return the result based on the result provided and the provided lambda expressions.
+The second way you don't define the ```Action``` method nor the ```Execute``` method. Instead, it is expected you already have the ```IResult```object and you pass it to the ```HandleResult``` method which will return the result based on the result provided and the provided lambda expressions.
 
 ```csharp
-Result<User> result = this.UsersService.CreateUser(user);
+IResult result = this.UsersService.CreateUser(user);
 
-return new ResultHandler<User, bool>()
+return new ResultHandler<bool>()
 	.OnSuccess(serviceResult => true)
 	.OnClientError(serviceResult => false)
 	.OnServerError(serviceResult => false)
 	.OnCustomStatus(serviceResult => false)
-	.HandleResult(user);
+	.HandleResult(result);
 ```
 
 #### Other features
@@ -89,13 +93,13 @@ The method ```OnStatus``` allows to define the result behaviour for a specific s
 ```csharp
 Result<User> result = this.UsersService.CreateUser(user);
 
-return new ResultHandler<User, string>()
+return new ResultHandler<string>()
 	.OnSuccess(serviceResult => "true")
 	.OnClientError(serviceResult => "false")
 	.OnServerError(serviceResult => "false")
 	.OnCustomStatus(serviceResult => false)
 	.OnStatus(Status.BadRequest, _ => "BadRequest")
-	.HandleResult(user);
+	.HandleResult(result);
 ```
 
 On the above code, ```ResulHandler``` returns a string. 
@@ -113,10 +117,10 @@ The method ```OnUnhittedHandler``` allows to define the result behaviour in case
 ```csharp
 Result<User> result = this.UsersService.CreateUser(user);
 
-return new ResultHandler<User, string>()
+return new ResultHandler<string>()
 	.OnSuccess(serviceResult => "true")
 	.OnUnhittedHandler(serviceResult => "UnhittedHandler")
-	.HandleResult(user);
+	.HandleResult(result);
 ```
 
 On the above code, ```ResulHandler``` returns a string. 
@@ -127,12 +131,12 @@ If the ```CreateUser``` method returns an error then ```ResultHandler``` returns
 
 ##### Defining behavious
 
-On  the ```OnSuccess```, ```OnClientError```, ```OnServerError```, ```OnCustomStatus```, ```OnStatus``` and ```OnUnhittedHandler``` methods you can access the ```Result<T>``` object that it is being handled on the lambda input.
+On  the ```OnSuccess```, ```OnClientError```, ```OnServerError```, ```OnCustomStatus```, ```OnStatus``` and ```OnUnhittedHandler``` methods you can access the ```IResult``` object that it is being handled on the lambda input.
 
 ```csharp
 Result<User> result = this.UsersService.CreateUser(user);
 
-return new ResultHandler<User, bool>()
+return new ResultHandler<bool>()
 	.OnSuccess(_ => true)
 	.OnClientError(_ => true)
 	.OnServerError(serviceResult => {
@@ -142,4 +146,12 @@ return new ResultHandler<User, bool>()
 	.OnCustomStatus(serviceResult => {
 		return (int)serviceResult.Status == 1000
 	});
+```
+
+If the ```IResult``` is of type ```Result<T>``` and you want to access Data inside the lambda you need to convert the ```IResult``` to ```Result<T>``` like shown below
+
+```csharp
+.OnCustomStatus(serviceResult => {
+	return ((Result<User>)serviceResult).Data!.Id == 0
+});
 ```
