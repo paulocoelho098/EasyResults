@@ -16,7 +16,7 @@ The EasyResults library is available as a NuGet package. To install it, open the
 
 ```Result<T>``` is a class that implements ```IResult``` and represents the output that can be handled, where T represents the type of data you are handling, for example, if you are getting an user by id you will have a return of ```Result<User>```. In the result you can also define a Status and a Message.
 
-```ResultHandler<T>``` class takes a generic type, where T is the type of the return of the handling, for example, if you are getting an user by id and you want to use EasyResults in the API Controller, you might have ```ResultHandler<ActionResult>```.
+```ResultHandler``` class is used to build the way you will handle your request.
 
 ### Available status
 
@@ -48,39 +48,41 @@ There are two ways you can use library to handle results.
 
 #### Via Action and Execute methods
 
-The first way you need to define the Action that will return the result to handle. The return type must be ```IResult```.
+The first way you need to define the Action that will execute your work.
 
 ```csharp
-return new ResultHandler<bool>()
+bool finalStatus = false;
+new ResultHandler()
 	.Action(() =>
 	{
-		return this.UsersService.CreateUser(user);
+		this.UsersService.CreateUser(user);
 	})
-	.OnSuccess(serviceResult => true)
-	.OnClientError(serviceResult => false)
-	.OnServerError(serviceResult => false)
-	.OnCustomStatus(serviceResult => false)
+	.OnSuccess(() => finalStatus = true)
+	.OnClientError(() => finalStatus = false)
+	.OnServerError(() => finalStatus = false)
+	.OnCustomStatus(() => finalStatus = false)
 	.Execute();
 ```
 
-On the code above we create an instance of new ```ResultHandler<bool>```. It defines the ```Action``` method  which takes a lambda expression that represents the service operation to be executed and returns a ```IResult``` that can be a ```Result<User>```. 
+On the code above we create an instance of new ```ResultHandler```. It defines the ```Action``` method  which takes a lambda expression that represents the service operation to be executed. 
 
-Afterward it sets the behaviour handlers ```OnSuccess```, ```OnClientError```, ```OnServerError``` and ```OnCustomStatus``` methods, which define the desired result for a successful operation, client-side error, server-side error, and custom status handling respectively.
+Afterward it sets the behaviour handlers ```OnSuccess```, ```OnClientError```, ```OnServerError``` and ```OnCustomStatus``` methods, which define the desired behavior for a successful operation, client-side error, server-side error, and custom status handling respectively.
 
-Finally, it executes the service operation by calling ```Execute``` method and returns the appropriate result based on the outcome of the operation and the provided lambda expressions.
+Finally, it executes the service operation by calling ```Execute``` method and handles the result based on the outcome of the operation and the provided lambda expressions.
 
 #### Via HandleResult method
 
-The second way you don't define the ```Action``` method nor the ```Execute``` method. Instead, it is expected you already have the ```IResult```object and you pass it to the ```HandleResult``` method which will return the result based on the result provided and the provided lambda expressions.
+The second way you don't define the ```Action``` method nor the ```Execute``` method. Instead, it is expected you already have the ```IResult```object and you pass it to the ```HandleResult``` method which will handle the result based on the result provided and the provided lambda expressions.
 
 ```csharp
 IResult result = this.UsersService.CreateUser(user);
+bool finalStatus = false;
 
-return new ResultHandler<bool>()
-	.OnSuccess(serviceResult => true)
-	.OnClientError(serviceResult => false)
-	.OnServerError(serviceResult => false)
-	.OnCustomStatus(serviceResult => false)
+new ResultHandler()
+	.OnSuccess(() => finalStatus = true)
+	.OnClientError(() => finalStatus = false)
+	.OnServerError(() => finalStatus = false)
+	.OnCustomStatus(() => finalStatus = false)
 	.HandleResult(result);
 ```
 
@@ -92,23 +94,22 @@ The method ```OnStatus``` allows to define the result behaviour for a specific s
 
 ```csharp
 Result<User> result = this.UsersService.CreateUser(user);
+string finalStatus = "";
 
-return new ResultHandler<string>()
-	.OnSuccess(serviceResult => "true")
-	.OnClientError(serviceResult => "false")
-	.OnServerError(serviceResult => "false")
-	.OnCustomStatus(serviceResult => false)
-	.OnStatus(Status.BadRequest, _ => "BadRequest")
+new ResultHandler()
+	.OnSuccess(() => finalStatus = "true")
+	.OnClientError(() => finalStatus = "false")
+	.OnServerError(() => finalStatus = "false")
+	.OnCustomStatus(() => finalStatus = "false")
+	.OnStatus(Status.BadRequest, () => finalStatus = "BadRequest")
 	.HandleResult(result);
 ```
 
-On the above code, ```ResulHandler``` returns a string. 
+If the ```CreateUser``` method returns success then ```ResulHandler``` sets "true" to finalStatus variable.
 
-If the ```CreateUser``` method returns success then ```ResulHandler``` returns "true".
+If the ```CreateUser``` method returns any error different from BadRequest then ```ResultHandler``` set "false" to finalStatus variable.
 
-If the ```CreateUser``` method returns any error different from BadRequest then ```ResultHandler``` returns "false".
-
-If the ```CreateUser``` method returns BadRequest then ```ResultHandler``` returns "BadRequest".
+If the ```CreateUser``` method returns BadRequest then ```ResultHandler``` sets "BadRequest" to finalStatus variable.
 
 ##### OnUnhittedHandler method
 
@@ -116,42 +117,36 @@ The method ```OnUnhittedHandler``` allows to define the result behaviour in case
 
 ```csharp
 Result<User> result = this.UsersService.CreateUser(user);
+string finalStatus = "";
 
-return new ResultHandler<string>()
-	.OnSuccess(serviceResult => "true")
-	.OnUnhittedHandler(serviceResult => "UnhittedHandler")
+new ResultHandler()
+	.OnSuccess(() => finalStatus = "true")
+	.OnUnhittedHandler(() => finalStatus = "UnhittedHandler")
 	.HandleResult(result);
 ```
 
 On the above code, ```ResulHandler``` returns a string. 
 
-If the ```CreateUser``` method returns success then ```ResulHandler``` returns "true".
+If the ```CreateUser``` method returns success then ```ResulHandler``` sets "true" to finalStatus variable.
 
-If the ```CreateUser``` method returns an error then ```ResultHandler``` returns "UnhittedHandler".
+If the ```CreateUser``` method returns an error then ```ResultHandler``` sets "UnhittedHandler" to finalStatus variable.
 
 ##### Defining behavious
 
-On  the ```OnSuccess```, ```OnClientError```, ```OnServerError```, ```OnCustomStatus```, ```OnStatus``` and ```OnUnhittedHandler``` methods you can access the ```IResult``` object that it is being handled on the lambda input.
+On  the ```OnSuccess```, ```OnClientError```, ```OnServerError```, ```OnCustomStatus```, ```OnStatus``` and ```OnUnhittedHandler``` methods you can access the ```IResult``` object that it is being handled on the lambda.
 
 ```csharp
 Result<User> result = this.UsersService.CreateUser(user);
+bool finalResult = false;
 
-return new ResultHandler<bool>()
-	.OnSuccess(_ => true)
-	.OnClientError(_ => true)
-	.OnServerError(serviceResult => {
-		Log.Critical(serviceResult.Message);
-		return false; 
+new ResultHandler()
+	.OnSuccess(() => finalResult = true)
+	.OnClientError(() => finalResult = true)
+	.OnServerError(() => {
+		Log.Critical(result.Message);
+		finalResult = false; 
 	})
 	.OnCustomStatus(serviceResult => {
-		return (int)serviceResult.Status == 1000
+		finalResult = (int)serviceResult.Status == 1000
 	});
-```
-
-If the ```IResult``` is of type ```Result<T>``` and you want to access Data inside the lambda you need to convert the ```IResult``` to ```Result<T>``` like shown below
-
-```csharp
-.OnCustomStatus(serviceResult => {
-	return ((Result<User>)serviceResult).Data!.Id == 0
-});
 ```

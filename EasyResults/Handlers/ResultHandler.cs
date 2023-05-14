@@ -54,7 +54,6 @@ public class ResultHandler
     /// <summary>
     /// Executes the method defined in _action and Handle its result
     /// </summary>
-    /// <returns>ResultHandler result</returns>
     /// <exception cref="ActionNotDefined">If _action is not defined then there isn't any method to execute</exception>
     public void Execute()
     {
@@ -72,7 +71,6 @@ public class ResultHandler
     /// <summary>
     /// Invokes the result handler method according to the received result
     /// </summary>
-    /// <returns>ResultHandler result</returns>
     /// <exception cref="UnreachableException">When the Status Code returned by _action if outside bounds</exception>
     /// <exception cref="NotHandledException">When the result is not handled by any Handler</exception>
     public void HandleResult(IResult result)
