@@ -21,6 +21,7 @@
     </None>
   </ItemGroup>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="copy &quot;$(SolutionDir)README.md&quot; &quot;$(ProjectDir)&quot;" />
+    <Exec Condition=" '$(OS)' == 'Windows_NT' " Command="copy &quot;$(SolutionDir)README.md&quot; &quot;$(ProjectDir)&quot;" />
+    <Exec Condition=" '$(OS)' != 'Windows_NT' " Command="cp &quot;$(SolutionDir)README.md&quot; &quot;$(ProjectDir)&quot;" />
   </Target>
 </Project>
